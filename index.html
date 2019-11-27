@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="static/main.css">
+</head>
+
+<body>
+
+    <div id="book-graph">
+        <div class="book-content">
+            <div class="book-graph">
+                <svg ref="root" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+
+                    <template v-for="(area, id) in areas">
+                        <g :id="id" :key="id" ref="graph">
+                            <rect :data-id="id" :width="area.size.w" :height="area.size.h" :x="area.pos.x" :y="area.pos.y" fill="#333333" opacity=".3" @mousedown.prevent="dragRect"></rect>
+                            <circle :data-id="id" :r="area.circleR" :cx="area.circleX" :cy="area.circleY" stroke="#000000" stroke-width="1" fill="#000000" @mousedown.prevent="dragRect"></circle>
+                        </g>
+                    </template>
+                </svg>
+                <img ref="img" class="book-img" height="500" src="kemsley_kluane.jpg">
+            </div>
+        </div>
+    </div>
+
+
+    <script src="static/vue.min.js"></script>
+    <script src="static/main.js"></script>
+
+</body>
+
+</html>
