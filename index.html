@@ -19,8 +19,12 @@
 
                     <template v-for="(area, id) in areas">
                         <g :id="id" :key="id" ref="graph">
-                            <rect :data-id="id" :width="area.size.w" :height="area.size.h" :x="area.pos.x" :y="area.pos.y" fill="#333333" opacity=".3" @mousedown.prevent="dragRect"></rect>
-                            <circle :data-id="id" :r="area.circleR" :cx="area.circleX" :cy="area.circleY" stroke="#000000" stroke-width="1" fill="#000000" @mousedown.prevent="dragRect"></circle>
+                            <rect :data-id="id" :width="area.size.w" :height="area.size.h" :x="area.pos.x"
+                                :y="area.pos.y" fill="#333333" opacity=".3"
+                                @mousedown.prevent="dragRect($event, true, id)"></rect>
+                            <circle :data-id="id" :r="area.circleR" :cx="area.circleX" :cy="area.circleY"
+                                stroke="#000000" stroke-width="1" fill="#000000"
+                                @mousedown.prevent="dragRect($event, false, id)"></circle>
                         </g>
                     </template>
                 </svg>

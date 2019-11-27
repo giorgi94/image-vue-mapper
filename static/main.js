@@ -2,41 +2,43 @@ const app = new Vue({
     el: "#book-graph",
     data: {
         areas: {},
-        element: null,
+        elementID: "",
+        isRect: true,
         position: {
             x: 0,
             y: 0,
         },
     },
     mounted() {
-        this.addArea({
-            pos: {
-                x: 20,
-                y: 50,
-            },
-            size: {
-                w: 80,
-                h: 100,
-            },
-            circleR: 3.5,
-            get circleX() {
-                return this.pos.x + this.size.w - this.circleR / 2;
-            },
-            set circleX(v) {
-                this.size.w = v - this.pos.x + this.circleR / 2;
-            },
-            get circleY() {
-                return this.pos.y + this.size.h - this.circleR / 2;
-            },
-            set circleY(v) {
-                this.size.h = v - this.pos.y + this.circleR / 2;
-            },
-        });
+        this.addArea();
     },
     methods: {
-        addArea(options = {}) {
+        addArea(c) {
             const id = this.makeid(10);
-            this.$set(this.areas, id, options);
+
+            c = c || { x: 20, y: 50 };
+
+
+            const opts = {
+                pos: { x: c.x, y: c.y },
+                size: { w: 100, h: 100 },
+                circleR: 3.5,
+                get circleX() {
+                    return this.pos.x + this.size.w - this.circleR / 2;
+                },
+                set circleX(v) {
+                    this.size.w = v - this.pos.x + this.circleR / 2;
+                },
+                get circleY() {
+                    return this.pos.y + this.size.h - this.circleR / 2;
+                },
+                set circleY(v) {
+                    this.size.h = v - this.pos.y + this.circleR / 2;
+                },
+            }
+
+
+            this.$set(this.areas, id, opts);
         },
         makeid(length) {
             let result = "";
@@ -49,31 +51,36 @@ const app = new Vue({
             }
             return result;
         },
-        dragRect(e) {
-            if (e.which !== 1) {
+        dragRect($event, isRect, elementID) {
+            if ($event.which !== 1) {
                 return;
             }
+
+            this.elementID = elementID;
+            this.isRect = isRect;
+
+            const clientX = $event.clientX
+            const clientY = $event.clientY
+
             const root = this.$refs.root;
 
-            this.element = e.target;
-
-            this.position.x = e.clientX;
-            this.position.y = e.clientY;
+            this.position.x = clientX;
+            this.position.y = clientY;
 
             root.onmouseup = this.stopDragging;
             root.onmousemove = this.startDragging;
         },
-        startDragging(e) {
-            const ID = this.element.dataset.id;
+        startDragging($event) {
 
-            const delteX = this.position.x - e.clientX;
-            const delteY = this.position.y - e.clientY;
+            const clientX = $event.clientX
+            const clientY = $event.clientY
 
-            const area = this.areas[ID];
+            const delteX = this.position.x - clientX;
+            const delteY = this.position.y - clientY;
 
-            const isRect = this.element.tagName.toLowerCase() === "rect";
+            const area = this.areas[this.elementID];
 
-            if (isRect) {
+            if (this.isRect) {
                 area.pos.x -= delteX;
                 area.pos.y -= delteY;
             } else {
@@ -81,8 +88,8 @@ const app = new Vue({
                 area.circleY -= delteY;
             }
 
-            this.position.x = e.clientX;
-            this.position.y = e.clientY;
+            this.position.x = clientX;
+            this.position.y = clientY;
         },
         stopDragging() {
             const root = this.$refs.root;
@@ -90,10 +97,14 @@ const app = new Vue({
             root.onmouseup = null;
             root.onmousemove = null;
 
-            this.element = null;
-
             this.position.x = 0;
             this.position.y = 0;
         },
+        onDelete() {
+
+            if (this.elementID in this.areas) {
+                this.$delete(this.areas, this.elementID)
+            }
+        }
     },
 });
