@@ -3,7 +3,7 @@ const app = new Vue({
     data: {
         areas: {},
         elementID: "",
-        isRect: true,
+        tagName: "",
         position: {
             x: 0,
             y: 0,
@@ -13,15 +13,15 @@ const app = new Vue({
         this.addArea();
     },
     methods: {
-        addArea(c) {
-            const id = this.makeid(10);
+        addArea(c = {}, id) {
+            id = id || this.uniqueid();
 
-            c = c || { x: 20, y: 50 };
+            c = { x: 20, y: 50, w: 100, h: 100, ...c };
 
 
             const opts = {
                 pos: { x: c.x, y: c.y },
-                size: { w: 100, h: 100 },
+                size: { w: c.w, h: c.h },
                 circleR: 3.5,
                 get circleX() {
                     return this.pos.x + this.size.w - this.circleR / 2;
@@ -40,6 +40,17 @@ const app = new Vue({
 
             this.$set(this.areas, id, opts);
         },
+        uniqueid() {
+            let id = this.makeid(10);
+            const ids = Object.keys(this.areas)
+
+            while (true) {
+                if (ids.indexOf(id) === -1) {
+                    return id;
+                }
+                id = this.makeid(10);
+            }
+        },
         makeid(length) {
             let result = "";
             let characters =
@@ -51,13 +62,13 @@ const app = new Vue({
             }
             return result;
         },
-        dragRect($event, isRect, elementID) {
+        dragRect($event, tagName, elementID) {
             if ($event.which !== 1) {
                 return;
             }
 
             this.elementID = elementID;
-            this.isRect = isRect;
+            this.tagName = tagName;
 
             const clientX = $event.clientX
             const clientY = $event.clientY
@@ -80,10 +91,10 @@ const app = new Vue({
 
             const area = this.areas[this.elementID];
 
-            if (this.isRect) {
+            if (this.tagName === 'rect') {
                 area.pos.x -= delteX;
                 area.pos.y -= delteY;
-            } else {
+            } else if (this.tagName === 'circle') {
                 area.circleX -= delteX;
                 area.circleY -= delteY;
             }

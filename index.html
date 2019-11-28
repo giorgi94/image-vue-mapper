@@ -18,13 +18,13 @@
                 <svg ref="root" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
 
                     <template v-for="(area, id) in areas">
-                        <g :id="id" :key="id" ref="graph">
-                            <rect :data-id="id" :width="area.size.w" :height="area.size.h" :x="area.pos.x"
-                                :y="area.pos.y" fill="#333333" opacity=".3"
-                                @mousedown.prevent="dragRect($event, true, id)"></rect>
-                            <circle :data-id="id" :r="area.circleR" :cx="area.circleX" :cy="area.circleY"
-                                stroke="#000000" stroke-width="1" fill="#000000"
-                                @mousedown.prevent="dragRect($event, false, id)"></circle>
+                        <g :id="id" :key="id" ref="graph" class="book-graph--item"
+                            :class="{ selected: id == elementID }">
+                            <rect :width="area.size.w" :height="area.size.h" :x="area.pos.x" :y="area.pos.y"
+                                @mousedown.prevent="dragRect($event, 'rect', id)"></rect>
+                            <circle :r="area.circleR" :cx="area.circleX" :cy="area.circleY"
+                                @mousedown.prevent="dragRect($event, 'circle', id)">
+                            </circle>
                         </g>
                     </template>
                 </svg>

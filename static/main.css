@@ -17,8 +17,20 @@
     left: 0;
 }
 
-.book-graph circle {
+.book-graph--item circle {
     cursor: nw-resize;
+    stroke-width: 1;
+    stroke: #000;
     fill: #fff;
     opacity: .8;
+}
+
+.book-graph--item.selected circle {
+    fill: #f1d84a;
+}
+
+
+.book-graph--item rect {
+    fill: #333;
+    opacity: .3;
 }
